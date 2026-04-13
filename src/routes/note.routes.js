@@ -1,9 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const { createNote } = require("../controllers/note.controller");
+const {
+  createNote,
+  createBulkNotes,
+} = require("../controllers/note.controller");
 
-// POST /api/notes — Create a single note
+// Bulk routes first (before /:id)
+router.post("/bulk", createBulkNotes);
+
+// CRUD single
 router.post("/", createNote);
 
 module.exports = router;
