@@ -4,12 +4,11 @@ const router = express.Router();
 const {
   createNote,
   createBulkNotes,
+  getAllNotes,
 } = require("../controllers/note.controller");
 
-// Bulk routes first (before /:id)
 router.post("/bulk", createBulkNotes);
-
-// CRUD single
 router.post("/", createNote);
+router.get("/", getAllNotes);
 
 module.exports = router;
