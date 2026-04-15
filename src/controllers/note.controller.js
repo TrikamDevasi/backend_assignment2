@@ -1,64 +1,52 @@
 const mongoose = require("mongoose");
 const Note = require("../models/note.model");
 
-// 1. POST /api/notes — Create a single note
 const createNote = async (req, res) => {
   try {
     const { title, content, category, isPinned } = req.body;
-    if (!title || !content) {
-      return res.status(400).json({ success: false, message: "Title and content are required", data: null });
-    }
+    if (!title || !content) return res.status(400).json({ success: false, message: "Title and content are required", data: null });
     const note = await Note.create({ title, content, category, isPinned });
     return res.status(201).json({ success: true, message: "Note created successfully", data: note });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message, data: null });
-  }
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-// 2. POST /api/notes/bulk — Create multiple notes
 const createBulkNotes = async (req, res) => {
   try {
     const { notes } = req.body;
-    if (!notes || !Array.isArray(notes) || notes.length === 0) {
-      return res.status(400).json({ success: false, message: "notes array is required and cannot be empty", data: null });
-    }
+    if (!notes || !Array.isArray(notes) || notes.length === 0) return res.status(400).json({ success: false, message: "notes array is required and cannot be empty", data: null });
     const created = await Note.insertMany(notes);
     return res.status(201).json({ success: true, message: `${created.length} notes created successfully`, data: created });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message, data: null });
-  }
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-// 3. GET /api/notes — Get all notes
 const getAllNotes = async (req, res) => {
   try {
     const notes = await Note.find();
     return res.status(200).json({ success: true, message: "Notes fetched successfully", count: notes.length, data: notes });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message, data: null });
-  }
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-// 4. GET /api/notes/:id — Get note by ID
 const getNoteById = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: "Invalid note ID", data: null });
-    }
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, message: "Invalid note ID", data: null });
     const note = await Note.findById(id);
-    if (!note) {
-      return res.status(404).json({ success: false, message: "Note not found", data: null });
-    }
+    if (!note) return res.status(404).json({ success: false, message: "Note not found", data: null });
     return res.status(200).json({ success: true, message: "Note fetched successfully", data: note });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message, data: null });
-  }
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-module.exports = {
-  createNote,
-  createBulkNotes,
-  getAllNotes,
-  getNoteById,
+// 5. PUT /api/notes/:id — Full replace
+const replaceNote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, message: "Invalid note ID", data: null });
+    const { title, content, category, isPinned } = req.body;
+    if (!title || !content) return res.status(400).json({ success: false, message: "Title and content are required", data: null });
+    const note = await Note.findByIdAndUpdate(id, { title, content, category, isPinned }, { new: true, overwrite: true, runValidators: true });
+    if (!note) return res.status(404).json({ success: false, message: "Note not found", data: null });
+    return res.status(200).json({ success: true, message: "Note replaced successfully", data: note });
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
+
+module.exports = { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote };
