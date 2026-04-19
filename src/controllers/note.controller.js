@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Note = require("../models/note.model");
 
+const ALLOWED_CATEGORIES = ["work", "personal", "study"];
+
 const createNote = async (req, res) => {
   try {
     const { title, content, category, isPinned } = req.body;
@@ -69,7 +71,6 @@ const deleteNote = async (req, res) => {
   } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-// 8. DELETE /api/notes/bulk — Delete multiple notes
 const deleteBulkNotes = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -79,4 +80,44 @@ const deleteBulkNotes = async (req, res) => {
   } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
 };
 
-module.exports = { createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes };
+// ─────────────────────────────────────────────
+// SECTION 1 — ROUTE PARAMETERS
+// ─────────────────────────────────────────────
+
+// 9. GET /api/notes/category/:category
+const getNotesByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+    if (!ALLOWED_CATEGORIES.includes(category)) return res.status(400).json({ success: false, message: "Invalid category. Allowed: work, personal, study", data: null });
+    const notes = await Note.find({ category });
+    if (notes.length === 0) return res.status(404).json({ success: false, message: `No notes found for category: ${category}`, data: null });
+    return res.status(200).json({ success: true, message: `Notes fetched for category: ${category}`, count: notes.length, data: notes });
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
+};
+
+// 10. GET /api/notes/status/:isPinned
+const getNotesByStatus = async (req, res) => {
+  try {
+    const { isPinned } = req.params;
+    if (isPinned !== "true" && isPinned !== "false") return res.status(400).json({ success: false, message: "isPinned must be true or false", data: null });
+    const pinned = isPinned === "true";
+    const notes = await Note.find({ isPinned: pinned });
+    return res.status(200).json({ success: true, message: pinned ? "Fetched all pinned notes" : "Fetched all unpinned notes", count: notes.length, data: notes });
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
+};
+
+// 11. GET /api/notes/:id/summary
+const getNoteSummary = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ success: false, message: "Invalid note ID", data: null });
+    const note = await Note.findById(id).select("title category isPinned createdAt");
+    if (!note) return res.status(404).json({ success: false, message: "Note not found", data: null });
+    return res.status(200).json({ success: true, message: "Note summary fetched successfully", data: note });
+  } catch (error) { return res.status(500).json({ success: false, message: error.message, data: null }); }
+};
+
+module.exports = {
+  createNote, createBulkNotes, getAllNotes, getNoteById, replaceNote, updateNote, deleteNote, deleteBulkNotes,
+  getNotesByCategory, getNotesByStatus, getNoteSummary,
+};
