@@ -1,3 +1,13 @@
+  import React from 'react';
+  
+  const Index = () =>  {
+	return (
+	  <div>
+	  </div>
+	);
+  }
+  
+  export default Index;
   require("dotenv").config();
 const app = require("./app");
 const connectDB = require("./config/db");

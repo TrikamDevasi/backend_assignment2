@@ -4,6 +4,7 @@ const {
   createNote, createBulkNotes, getAllNotes, getNoteById,
   replaceNote, updateNote, deleteNote, deleteBulkNotes,
   getNotesByCategory, getNotesByStatus, getNoteSummary,
+  filterNotes, getPinnedNotes, filterByCategory, filterByDateRange,
 } = require("../controllers/note.controller");
 
 // Bulk routes first (before /:id)
@@ -13,6 +14,12 @@ router.delete("/bulk", deleteBulkNotes);
 // Route param sections
 router.get("/category/:category", getNotesByCategory);
 router.get("/status/:isPinned", getNotesByStatus);
+
+// Query param sections
+router.get("/filter", filterNotes);
+router.get("/filter/pinned", getPinnedNotes);
+router.get("/filter/category", filterByCategory);
+router.get("/filter/date-range", filterByDateRange);
 
 // CRUD single-item routes LAST (/:id must always be last)
 router.post("/", createNote);
