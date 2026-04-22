@@ -1,14 +1,38 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-  createNote, createBulkNotes, getAllNotes, getNoteById,
-  replaceNote, updateNote, deleteNote, deleteBulkNotes,
-  getNotesByCategory, getNotesByStatus, getNoteSummary,
-  filterNotes, getPinnedNotes, filterByCategory, filterByDateRange,
-  paginateNotes, paginateByCategory,
+  // CRUD
+  createNote,
+  createBulkNotes,
+  getAllNotes,
+  getNoteById,
+  replaceNote,
+  updateNote,
+  deleteNote,
+  deleteBulkNotes,
+  // Route params
+  getNotesByCategory,
+  getNotesByStatus,
+  getNoteSummary,
+  // Query params
+  filterNotes,
+  getPinnedNotes,
+  filterByCategory,
+  filterByDateRange,
+  // Pagination
+  paginateNotes,
+  paginateByCategory,
+  // Sorting
+  sortNotes,
+  sortPinnedNotes,
 } = require("../controllers/note.controller");
 
-// Bulk routes first (before /:id)
+// ─────────────────────────────────────────────
+// IMPORTANT: Route order matters — specific paths MUST come before /:id
+// ─────────────────────────────────────────────
+
+// CRUD — bulk routes first (before /:id)
 router.post("/bulk", createBulkNotes);
 router.delete("/bulk", deleteBulkNotes);
 
@@ -26,7 +50,11 @@ router.get("/filter/date-range", filterByDateRange);
 router.get("/paginate", paginateNotes);
 router.get("/paginate/category/:category", paginateByCategory);
 
-// CRUD single-item routes LAST
+// Sorting
+router.get("/sort", sortNotes);
+router.get("/sort/pinned", sortPinnedNotes);
+
+// CRUD — single-item routes LAST (/:id must always be last)
 router.post("/", createNote);
 router.get("/", getAllNotes);
 router.get("/:id/summary", getNoteSummary);
