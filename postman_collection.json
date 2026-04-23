@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "8b5ca2db-9800-4b24-9b2f-3d6e1fae77e2",
+		"name": "Notes Management API - Assignment 02",
+		"description": "Postman Collection for the Notes Management REST API (Assignment 02) covering CRUD operations, Route Parameters, Query Parameters, Pagination, and Sorting.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. CRUD Operations",
+			"item": [
+				{
+					"name": "Create Note",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Study Node.js\",\n    \"content\": \"Learn about MVC architecture and RESTful APIs.\",\n    \"category\": \"study\",\n    \"isPinned\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						},
+						"description": "Create a new note with title, content, category, and isPinned status."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bulk Notes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notes\": [\n        {\n            \"title\": \"Buy groceries\",\n            \"content\": \"Milk, eggs, bread, butter\",\n            \"category\": \"personal\",\n            \"isPinned\": false\n        },\n        {\n            \"title\": \"Finish project documentation\",\n            \"content\": \"Write clean documentation and README for the assignments.\",\n            \"category\": \"work\",\n            \"isPinned\": true\n        },\n        {\n            \"title\": \"Review code PRs\",\n            \"content\": \"Check performance and standard conventions for backend API code.\",\n            \"category\": \"work\",\n            \"isPinned\": false\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/bulk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"bulk"
+							]
+						},
+						"description": "Create multiple notes at once using a batch notes array."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						},
+						"description": "Retrieve all notes in the database."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Note by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/{{noteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"{{noteId}}"
+							]
+						},
+						"description": "Fetch a single note details using its MongoDB ObjectId."
+					},
+					"response": []
+				},
+				{
+					"name": "Replace Note (Full Update)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Study Node.js & Mongoose\",\n    \"content\": \"Fully master MVC architecture, Express routing, and MongoDB schemas.\",\n    \"category\": \"study\",\n    \"isPinned\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/{{noteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"{{noteId}}"
+							]
+						},
+						"description": "Completely replace the note at the specified ID with new values."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Note (Partial Update)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isPinned\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/{{noteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"{{noteId}}"
+							]
+						},
+						"description": "Partially update specific fields of a note."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Note",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/{{noteId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"{{noteId}}"
+							]
+						},
+						"description": "Delete a note from the database."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bulk Notes",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ids\": [\n        \"662c127a5b3a4a1b2c3d4e5f\",\n        \"662c127b5b3a4a1b2c3d4e60\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/bulk",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"bulk"
+							]
+						},
+						"description": "Delete multiple notes simultaneously by passing an array of ObjectIds in the request body."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Route Parameters",
+			"item": [
+				{
+					"name": "Get Notes by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/category/study",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"category",
+								"study"
+							]
+						},
+						"description": "Retrieve notes belonging to a specific category passed in the route path."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notes by Pinned Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/status/true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"status",
+								"true"
+							]
+						},
+						"description": "Retrieve notes by their pinned status (true or false) passed as a route parameter."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Note Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/{{noteId}}/summary",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"{{noteId}}",
+								"summary"
+							]
+						},
+						"description": "Retrieve a summarized version of a note text content along with character count and metadata."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Query Parameters",
+			"item": [
+				{
+					"name": "Filter by Pinned Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/filter?isPinned=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "isPinned",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Filter notes using 'isPinned' query parameter."
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Pinned Only (Short-hand)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/filter/pinned",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"filter",
+								"pinned"
+							]
+						},
+						"description": "Special endpoint returning only pinned notes."
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/filter/category?category=work",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"filter",
+								"category"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "work"
+								}
+							]
+						},
+						"description": "Filter notes using 'category' query parameter."
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/filter/date-range?startDate=2026-04-01&endDate=2026-04-30",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"filter",
+								"date-range"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2026-04-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2026-04-30"
+								}
+							]
+						},
+						"description": "Filter notes created within a specific startDate and endDate range."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Pagination",
+			"item": [
+				{
+					"name": "Paginate All Notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/paginate?page=1&limit=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"paginate"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						},
+						"description": "Get paginated list of all notes."
+					},
+					"response": []
+				},
+				{
+					"name": "Paginate by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/paginate/category/work?page=1&limit=3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"paginate",
+								"category",
+								"work"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						},
+						"description": "Retrieve paginated notes matching a specific category path parameter."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Sorting",
+			"item": [
+				{
+					"name": "Sort Notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/sort?sortBy=title&order=asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"sort"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "title"
+								},
+								{
+									"key": "order",
+									"value": "asc"
+								}
+							]
+						},
+						"description": "Sort notes by field (title, category, createdAt, updatedAt) and direction (asc/desc)."
+					},
+					"response": []
+				},
+				{
+					"name": "Sort Pinned Notes First",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notes/sort/pinned?sortBy=createdAt&order=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"sort",
+								"pinned"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "createdAt"
+								},
+								{
+									"key": "order",
+									"value": "desc"
+								}
+							]
+						},
+						"description": "Fetch notes with pinned notes prioritized at the top, and further sorted by secondary field."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "noteId",
+			"value": "662c127a5b3a4a1b2c3d4e5f",
+			"type": "string"
+		}
+	]
+}
